@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Data Update</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            var socket = io();
+
+            // Function to send an update to the server
+            function sendUpdate() {
+                var updateData = document.getElementById('updateData').value;
+                socket.emit('send_update', updateData);
+                document.getElementById('updateData').value = '';
+            }
+
+            // Function to receive an update from the server
+            socket.on('receive_update', (data) => {
+                var node = document.createElement('li');
+                var textnode = document.createTextNode(data);
+                node.appendChild(textnode);
+                document.getElementById('updates').appendChild(node);
+            });
+
+            // Add event listener to the form to handle the send button click
+            document.getElementById('update-form').addEventListener('submit', (event) => {
+                event.preventDefault();
+                sendUpdate();
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Real-Time Data Update</h1>
+    <ul id="updates"></ul>
+    <form id="update-form">
+        <input id="updateData" autocomplete="off" placeholder="Type a message">
+        <button>Send</button>
+    </form>
+</body>
+</html>

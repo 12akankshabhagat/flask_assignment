@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Real-Time Notifications</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            var socket = io();
+
+            // Function to send a notification to the server
+            function sendNotification() {
+                var notificationData = document.getElementById('notificationData').value;
+                socket.emit('send_notification', notificationData);
+                document.getElementById('notificationData').value = '';
+            }
+
+            // Function to receive a notification from the server
+            socket.on('receive_notification', (data) => {
+                var node = document.createElement('li');
+                var textnode = document.createTextNode(data);
+                node.appendChild(textnode);
+                document.getElementById('notifications').appendChild(node);
+            });
+
+            // Add event listener to the form to handle the send button click
+            document.getElementById('notification-form').addEventListener('submit', (event) => {
+                event.preventDefault();
+                sendNotification();
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Real-Time Notifications</h1>
+    <ul id="notifications"></ul>
+    <form id="notification-form">
+        <input id="notificationData" autocomplete="off" placeholder="Type a notification">
+        <button>Send</button>
+    </form>
+</body>
+</html>
